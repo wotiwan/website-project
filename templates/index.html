@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for post in posts %}
+<div class="post">
+    <div class="post__img">
+        <img src="{{ url_for('static', filename='posts/') }}{{ post[0].img }}" alt="">
+    </div>
+    <div class="post__description">
+        <span class="post__description-text">{{ post[0].description }}</span>
+    </div>
+    <div class="post__likes"><a href="{{ url_for('main.like', post_id=post[0].id) }}" target="_self">
+        <button class="selector" data-id="like">
+            <svg width="28" height="25" viewBox="0 0 19 17" xmlns="http://www.w3.org/2000/svg" style= "fill: none">
+        <path d="M15.8398 2.39496C13.013 -0.169205 10.2871 2.03882 9.27755 
+            3.46336C8.26797 2.03882 5.54163 -0.169205 2.71481 2.39496C-0.112011 
+            4.95912 1.87349 8.80536 3.2196 10.408C4.22918 11.6544 6.85456 14.361  
+            9.27755 15.2158C11.7005 14.361 14.3254 11.6544 15.335 10.408C16.6811 
+            8.80536 18.6666 4.95912 15.8398 2.39496Z" stroke="black" 
+            stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        </button></a>
+        <span class="post__likes-count">{{ post[1] }}</span>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

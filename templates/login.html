@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+    
+{% block content %}
+<div class="registration-container">
+<form method="POST" action="/login">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="notification is-danger">
+            {{ messages[0] }}
+        </div>
+    {% endif %}
+    {% endwith %}
+    <label>
+        Email
+        <input type="email" name="email" placeholder="Your Email" autofocus="">
+    </label>
+    <label>
+        Пароль
+        <input type="password" name="password" placeholder="Your Password">
+    </label>
+    <label class="check">
+        <input type="checkbox" name="remember"  class="check__input">
+        <span class="check__description">Запомнить меня</span>
+    </label>
+    <button class="confirm-button">
+        Авторизоваться
+    </button>
+</form>
+</div>
+{% endblock %}

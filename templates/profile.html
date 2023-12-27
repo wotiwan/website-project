@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block script %}
+
+<script>
+let posts = document.querySelectorAll('.post');
+posts.forEach(element => {
+    let inputFile = element.querySelector('.image-input-form [data-id=image-input]');
+    let image = element.querySelector('.preview-container-edit [data-id=preview-image]');
+    inputFile.onchange = function() {
+        console.log('hi');
+        console.log(image);
+        let file = inputFile.files[0];
+        if (file) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                image.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+<form method="POST" action="{{ url_for('main.settings') }}" enctype='multipart/form-data'>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="notification is-danger">
+            {{ messages[0] }}
+        </div>
+    {% endif %}
+    {% endwith %}
+    <label>
+        Текущий пароль (required)
+        <input type="password" name="cur_password" placeholder="Your current Password" required>
+    </label>
+    <label>
+        Новый пароль
+        <input type="password" name="new_password" placeholder="Your new Password">
+    </label>
+    <label>
+        Ваше имя
+        <input type="text" name="name" placeholder="Name" autofocus="">
+    </label>
+    <label>
+        Сменить аватарку
+	 <div class="ava-image-input-and-preview">
+            <div class="ava-image-input-form">
+                <input type="file" id="ava-input" name="ava_pic" accept="image/*" onchange="previewAva()">
+                <div class="plus-sign"></div>
+                <span>Добавить файл</span>
+            </div>
+            <div id="ava-preview-container">
+                <img id="ava-preview-image" src="#" alt="Превью" style="display:none;">
+            </div>
+        </div>
+    </label>
+    <input type="submit" class="confirm-button" value="Применить">
+</form>
+</div>
+<div class="new-post-container">
+    <h1>Добавить новый пост</h1>
+    <form id="image-form" method="POST" action="/new_post" enctype='multipart/form-data'>
+        <div class="image-input-and-preview">
+            <div class="image-input-form">
+                <input type="file" id="image-input" name="post_pic" accept="image/*" onchange="previewImage()" required>
+                <div class="plus-sign"></div>
+                <span>Добавить файл</span>
+            </div>
+            <div id="preview-container">
+                <img id="preview-image" src="#" alt="Превью" style="display:none;">
+            </div>
+        </div>
+        <div class="text-input-container">
+             <span>Добавьте описание</span>
+             <input type="text" name="post_desc" class="text-input" required>
+        </div>
+        <input type="submit" class="confirm-button" value="Загрузить пост">
+    </form>
+</div>
+
+{% if posts %}
+<h1>Редактирование постов</h1>
+{% endif %}
+
+{% for post in posts %}
+<div class="post">
+<form method="POST" action="/edit/{{ post.id }}" enctype='multipart/form-data' class="basic-form">
+    <div class="image-input-and-preview">
+            <div class="image-input-form">
+                <input type="file" class="image-input-edit" data-id="image-input" name="editpic" accept="image/*">
+                <div class="plus-sign"></div>
+                <span>Добавить файл</span>
+            </div>
+            <div class="preview-container-edit" data-id="preview-container">
+                <img data-id="preview-image" src="{{ url_for('static', filename='posts/') }}{{ post.img }}" alt="Превью" style="display:block;">
+            </div>
+    </div>
+
+    <div class="">
+        <input class="text-input" type="textarea" name="editdesc" value="{{ post.description }}">
+    </div>
+    <div>
+        <input type="submit" class="confirm-button" value="Применить изменения">
+    </div>
+</form>
+<div class="delete-btn-container">
+<a class="confirm-button" href="{{ url_for('main.delete', post_id=post.id) }}">Удалить</a>
+</div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
